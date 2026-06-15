@@ -272,7 +272,7 @@ export default function App() {
       </div>
 
       {/* Floating Music Controls Button */}
-      {opened && (
+      {riddlePassed && (
         <button
           className={`music-toggle-btn ${isPlaying ? "playing" : ""}`}
           onClick={handlePlayToggle}
@@ -397,7 +397,7 @@ export default function App() {
               <h2 className="main-greeting" style={{ fontSize: "1.3rem" }}>كل عام وأنتِ بخير يا أطيب إنسانة وأجمل أقداري 💖</h2>
               <GoldDivider />
               <p className="main-question" style={{ minHeight: "auto", marginBottom: "8px" }}>
-                ما معنى اي ؟
+                ما معنى "اي" ؟
               </p>
               
               <form onSubmit={checkRiddle} style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
