@@ -180,11 +180,6 @@ export default function App() {
   // Open Invitation
   const handleOpenInvitation = () => {
     setOpened(true);
-    if (audioRef.current) {
-      audioRef.current.play()
-        .then(() => setIsPlaying(true))
-        .catch((err) => console.log("Music autoplay failed:", err));
-    }
   };
 
   // Riddle check verification handler
@@ -197,6 +192,12 @@ export default function App() {
     if (isCorrect) {
       setRiddleError("");
       setRiddlePassed(true);
+      // Play background music only after correct answer
+      if (audioRef.current) {
+        audioRef.current.play()
+          .then(() => setIsPlaying(true))
+          .catch((err) => console.log("Music play failed:", err));
+      }
     } else {
       setRiddleError("أنتِ لستِ من يسكن الروح 😢");
     }
@@ -396,7 +397,7 @@ export default function App() {
               <h2 className="main-greeting" style={{ fontSize: "1.3rem" }}>كل عام وأنتِ بخير يا أطيب إنسانة وأجمل أقداري 💖</h2>
               <GoldDivider />
               <p className="main-question" style={{ minHeight: "auto", marginBottom: "8px" }}>
-                ما معنى "اي" بلغتنا؟ 🤔
+                ما معنى اي ؟
               </p>
               
               <form onSubmit={checkRiddle} style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
