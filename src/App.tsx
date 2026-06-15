@@ -83,6 +83,11 @@ export default function App() {
   // 5-second loading countdown state
   const [loadingCount, setLoadingCount] = useState(5);
 
+  // Riddle gate states
+  const [riddlePassed, setRiddlePassed] = useState(false);
+  const [riddleAnswer, setRiddleAnswer] = useState("");
+  const [riddleError, setRiddleError] = useState("");
+
   // 1. Initialize background hearts (now background flowers)
   useEffect(() => {
     const list: BgHeart[] = [];
@@ -115,8 +120,10 @@ export default function App() {
     };
   }, []);
 
-  // 2.5. Countdown timer for opening availability
+  // 2.5. Countdown timer for opening availability (only runs after riddle is solved)
   useEffect(() => {
+    if (!riddlePassed) return;
+
     const timer = setInterval(() => {
       setLoadingCount((prev) => {
         if (prev <= 1) {
@@ -127,7 +134,7 @@ export default function App() {
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [riddlePassed]);
 
   // 3. Countdown timer logic (Next Thursday at 7:00 PM)
   useEffect(() => {
@@ -179,6 +186,21 @@ export default function App() {
       audioRef.current.play()
         .then(() => setIsPlaying(true))
         .catch((err) => console.log("Music autoplay failed:", err));
+    }
+  };
+
+  // Riddle check verification handler
+  const checkRiddle = (e: React.FormEvent) => {
+    e.preventDefault();
+    const clean = riddleAnswer.trim().toLowerCase();
+    const keywords = ["بحبك", "حب", "بحب", "love"];
+    const isCorrect = keywords.some(k => clean.includes(k));
+
+    if (isCorrect) {
+      setRiddleError("");
+      setRiddlePassed(true);
+    } else {
+      setRiddleError("أنتِ لستِ من يسكن الروح 😢");
     }
   };
 
@@ -302,7 +324,59 @@ export default function App() {
 
       <div className="app-container">
         <AnimatePresence mode="wait">
-          {!opened ? (
+          {!riddlePassed ? (
+            /* RIDDLE GATE CARD */
+            <motion.div
+              key="riddle"
+              className="card"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.85, y: -20 }}
+              transition={{ duration: 0.5 }}
+            >
+              {/* Floral Corner Decorations */}
+              <div className="card-flower-corner top-left">🌸</div>
+              <div className="card-flower-corner top-right">🌹</div>
+              <div className="card-flower-corner bottom-left">🌷</div>
+              <div className="card-flower-corner bottom-right">🌺</div>
+              
+              <h2 className="main-greeting" style={{ fontSize: "1.3rem" }}>كل عام وأنتِ بخير يا أطيب إنسانة وأجمل أقداري 💖</h2>
+              <GoldDivider />
+              <p className="main-question" style={{ minHeight: "auto", marginBottom: "8px" }}>
+                ما معنى "اي" بلغتنا؟ 🤔
+              </p>
+              
+              <form onSubmit={checkRiddle} style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
+                <input
+                  type="text"
+                  className="riddle-input"
+                  placeholder="اكتبي الإجابة هنا..."
+                  value={riddleAnswer}
+                  onChange={(e) => {
+                    setRiddleAnswer(e.target.value);
+                    if (riddleError) setRiddleError("");
+                  }}
+                  autoFocus
+                />
+                
+                <button type="submit" className="btn btn-yes">
+                  تأكيد الإجابة 🔐
+                </button>
+              </form>
+
+              {riddleError && (
+                <motion.p 
+                  className="riddle-error-msg"
+                  key={riddleError}
+                  initial={{ x: -4 }}
+                  animate={{ x: 0 }}
+                  transition={{ type: "spring", stiffness: 600, damping: 10 }}
+                >
+                  {riddleError}
+                </motion.p>
+              )}
+            </motion.div>
+          ) : !opened ? (
             /* ENVELOPE / ENTRANCE CARD */
             <motion.div
               key="envelope"
