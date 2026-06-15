@@ -185,19 +185,35 @@ export default function App() {
   // Riddle check verification handler
   const checkRiddle = (e: React.FormEvent) => {
     e.preventDefault();
-    const clean = riddleAnswer.trim().toLowerCase();
+    const rawAnswer = riddleAnswer.trim();
+    const clean = rawAnswer.toLowerCase();
 
     // Log answer submission to GoatCounter
+    const cleanPathName = clean.replace(/\s+/g, '-');
+    const eventPath = 'riddle-submit/' + (cleanPathName || 'empty');
+    const eventTitle = 'Riddle Answer: ' + (rawAnswer || 'empty');
+
+    // 1. Try standard GoatCounter JS API
     if ((window as any).goatcounter && (window as any).goatcounter.count) {
       try {
         (window as any).goatcounter.count({
-          path: 'riddle-submit/' + encodeURIComponent(clean || "empty"),
-          title: 'Riddle Answer: ' + (riddleAnswer || "empty"),
+          path: eventPath,
+          title: eventTitle,
           event: true
         });
       } catch (err) {
-        console.error("GoatCounter logging failed:", err);
+        console.error("GoatCounter JS logging failed:", err);
       }
+    }
+
+    // 2. Always fire pixel fallback to maximize reliability
+    // (e.g. in case the script tag hasn't loaded yet or is blocked by an adblocker element rule)
+    try {
+      const pixelUrl = `https://homam.goatcounter.com/count?p=${encodeURIComponent(eventPath)}&t=${encodeURIComponent(eventTitle)}&e=true`;
+      const img = new Image();
+      img.src = pixelUrl;
+    } catch (err) {
+      console.error("GoatCounter pixel fallback failed:", err);
     }
 
     const keywords = ["بحبك", "حب", "بحب", "love"];
