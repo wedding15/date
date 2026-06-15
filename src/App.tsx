@@ -308,7 +308,7 @@ export default function App() {
               key="invitation"
               className="card"
               initial={{ opacity: 0, scale: 0.85, rotateY: -90 }}
-              animate={{ opacity: 1, scale: 1 }}
+              animate={{ opacity: 1, scale: 1, rotateY: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.6 }}
             >
