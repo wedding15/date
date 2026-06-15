@@ -120,10 +120,8 @@ export default function App() {
     };
   }, []);
 
-  // 2.5. Countdown timer for opening availability (only runs after riddle is solved)
+  // 2.5. Countdown timer for opening availability (runs immediately on mount)
   useEffect(() => {
-    if (!riddlePassed) return;
-
     const timer = setInterval(() => {
       setLoadingCount((prev) => {
         if (prev <= 1) {
@@ -134,7 +132,7 @@ export default function App() {
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [riddlePassed]);
+  }, []);
 
   // 3. Countdown timer logic (Next Thursday at 7:00 PM)
   useEffect(() => {
@@ -324,15 +322,70 @@ export default function App() {
 
       <div className="app-container">
         <AnimatePresence mode="wait">
-          {!riddlePassed ? (
-            /* RIDDLE GATE CARD */
+          {!opened ? (
+            /* STEP 1: ENVELOPE / ENTRANCE CARD */
             <motion.div
-              key="riddle"
+              key="envelope"
               className="card"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.85, rotateY: 90 }}
+              transition={{ duration: 0.6 }}
+            >
+              {/* Floral Corner Decorations */}
+              <div className="card-flower-corner top-left">🌸</div>
+              <div className="card-flower-corner top-right">🌹</div>
+              <div className="card-flower-corner bottom-left">🌷</div>
+              <div className="card-flower-corner bottom-right">🌺</div>
+              <div className="envelope-crest">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                </svg>
+              </div>
+              <h1 className="envelope-title">وصلتكِ رسالة جديدة 🌸</h1>
+              <p className="envelope-subtitle">دعوة خاصة ومميزة تم تصميمها لكِ خصيصاً</p>
+              
+              <AnimatePresence mode="wait">
+                {loadingCount > 0 ? (
+                  <motion.div
+                    key="loader"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    style={{ width: "100%" }}
+                  >
+                    <div className="luxury-loader">
+                      <motion.div 
+                        className="luxury-loader-bar" 
+                        initial={{ width: "0%" }}
+                        animate={{ width: "100%" }}
+                        transition={{ duration: 5, ease: "linear" }}
+                      />
+                    </div>
+                    <p className="loader-text">جاري إعداد الدعوة الخاصة بكِ... {loadingCount}</p>
+                  </motion.div>
+                ) : (
+                  <motion.button
+                    key="btn"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="btn-gold-shimmer"
+                    onClick={handleOpenInvitation}
+                  >
+                    افتح الرسالة 💌
+                  </motion.button>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          ) : !riddlePassed ? (
+            /* STEP 2: RIDDLE GATE CARD */
+            <motion.div
+              key="riddle"
+              className="card"
+              initial={{ opacity: 0, scale: 0.85, rotateY: -90 }}
+              animate={{ opacity: 1, scale: 1, rotateY: 0 }}
               exit={{ opacity: 0, scale: 0.85, y: -20 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.6 }}
             >
               {/* Floral Corner Decorations */}
               <div className="card-flower-corner top-left">🌸</div>
@@ -340,7 +393,7 @@ export default function App() {
               <div className="card-flower-corner bottom-left">🌷</div>
               <div className="card-flower-corner bottom-right">🌺</div>
               
-              <h2 className="main-greeting" style={{ fontSize: "1.38rem" }}>وصلتكِ رسالة جديدة 💌</h2>
+              <h2 className="main-greeting" style={{ fontSize: "1.3rem" }}>كل عام وأنتِ بخير يا أطيب إنسانة وأجمل أقداري 💖</h2>
               <GoldDivider />
               <p className="main-question" style={{ minHeight: "auto", marginBottom: "8px" }}>
                 ما معنى "اي" بلغتنا؟ 🤔
@@ -376,63 +429,8 @@ export default function App() {
                 </motion.p>
               )}
             </motion.div>
-          ) : !opened ? (
-            /* ENVELOPE / ENTRANCE CARD */
-            <motion.div
-              key="envelope"
-              className="card"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.85, rotateY: 90 }}
-              transition={{ duration: 0.6 }}
-            >
-              {/* Floral Corner Decorations */}
-              <div className="card-flower-corner top-left">🌸</div>
-              <div className="card-flower-corner top-right">🌹</div>
-              <div className="card-flower-corner bottom-left">🌷</div>
-              <div className="card-flower-corner bottom-right">🌺</div>
-              <div className="envelope-crest">
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                </svg>
-              </div>
-              <h1 className="envelope-title" style={{ fontSize: "1.32rem", lineHeight: "1.5" }}>كل عام وأنتِ بخير يا أطيب إنسانة وأجمل أقداري 💖</h1>
-              <p className="envelope-subtitle">دعوة خاصة ومميزة تم تصميمها لكِ خصيصاً</p>
-              
-              <AnimatePresence mode="wait">
-                {loadingCount > 0 ? (
-                  <motion.div
-                    key="loader"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    style={{ width: "100%" }}
-                  >
-                    <div className="luxury-loader">
-                      <motion.div 
-                        className="luxury-loader-bar" 
-                        initial={{ width: "0%" }}
-                        animate={{ width: "100%" }}
-                        transition={{ duration: 5, ease: "linear" }}
-                      />
-                    </div>
-                    <p className="loader-text">جاري إعداد الدعوة الخاصة بكِ... {loadingCount}</p>
-                  </motion.div>
-                ) : (
-                  <motion.button
-                    key="btn"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="btn-gold-shimmer"
-                    onClick={handleOpenInvitation}
-                  >
-                    افتح الرسالة 💌
-                  </motion.button>
-                )}
-              </AnimatePresence>
-            </motion.div>
           ) : !yesClicked ? (
-            /* MAIN CARD - POETRY AND YES/NO QUESTIONS */
+            /* STEP 3: MAIN CARD - POETRY AND YES/NO QUESTIONS */
             <motion.div
               key="invitation"
               className="card"
