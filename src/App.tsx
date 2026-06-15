@@ -80,6 +80,9 @@ export default function App() {
   // Next Thursday Countdown State
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
+  // 5-second loading countdown state
+  const [loadingCount, setLoadingCount] = useState(5);
+
   // 1. Initialize background hearts (now background flowers)
   useEffect(() => {
     const list: BgHeart[] = [];
@@ -97,17 +100,33 @@ export default function App() {
     setBgHearts(list);
   }, []);
 
-  // 2. Initialize Audio
+  // 2. Initialize Audio & Preload Immediately
   useEffect(() => {
     audioRef.current = new Audio(musicFile);
     audioRef.current.loop = true;
     audioRef.current.volume = 0.45;
+    audioRef.current.preload = "auto";
+    audioRef.current.load(); // Forces browser to download audio in the background immediately
 
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
       }
     };
+  }, []);
+
+  // 2.5. Countdown timer for opening availability
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setLoadingCount((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
   }, []);
 
   // 3. Countdown timer logic (Next Thursday at 7:00 PM)
@@ -305,9 +324,38 @@ export default function App() {
               </div>
               <h1 className="envelope-title">وصلتكِ رسالة جديدة 🌸</h1>
               <p className="envelope-subtitle">دعوة خاصة ومميزة تم تصميمها لكِ خصيصاً</p>
-              <button className="btn-gold-shimmer" onClick={handleOpenInvitation}>
-                افتح الرسالة 💌
-              </button>
+              
+              <AnimatePresence mode="wait">
+                {loadingCount > 0 ? (
+                  <motion.div
+                    key="loader"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    style={{ width: "100%" }}
+                  >
+                    <div className="luxury-loader">
+                      <motion.div 
+                        className="luxury-loader-bar" 
+                        initial={{ width: "0%" }}
+                        animate={{ width: "100%" }}
+                        transition={{ duration: 5, ease: "linear" }}
+                      />
+                    </div>
+                    <p className="loader-text">جاري إعداد الدعوة الخاصة بكِ... {loadingCount}</p>
+                  </motion.div>
+                ) : (
+                  <motion.button
+                    key="btn"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="btn-gold-shimmer"
+                    onClick={handleOpenInvitation}
+                  >
+                    افتح الرسالة 💌
+                  </motion.button>
+                )}
+              </AnimatePresence>
             </motion.div>
           ) : !yesClicked ? (
             /* MAIN CARD - POETRY AND YES/NO QUESTIONS */

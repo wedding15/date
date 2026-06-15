@@ -635,3 +635,34 @@ body {
     right: 10px;
   }
 }
+
+/* ─── Luxury Loader Styles ─── */
+.luxury-loader {
+  width: 100%;
+  max-width: 240px;
+  height: 4px;
+  background: rgba(223, 192, 137, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 24px auto 12px auto;
+  position: relative;
+}
+
+.luxury-loader-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold-mid), var(--gold-dark));
+  border-radius: 4px;
+}
+
+.loader-text {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 12px;
+  animation: pulseText 1.5s infinite ease-in-out;
+}
+
+@keyframes pulseText {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
