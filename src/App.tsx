@@ -199,7 +199,7 @@ export default function App() {
           .catch((err) => console.log("Music play failed:", err));
       }
     } else {
-      if (clean.includes("تسنيم")) {
+      if (clean.includes("تسنيم") || clean.includes("tasneem")) {
         setRiddleError("اي انت بتسكني الروح بس بدي جواب صح 💖");
       } else {
         setRiddleError("أنتِ لستِ من يسكن الروح 😢");
