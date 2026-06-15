@@ -45,7 +45,6 @@ interface BgHeart {
 }
 
 const fleeingComments = [
-  "تشرفيني بروحة الخميس ننبسط ونغير جو؟ 💖",
   "ما في مهرب! 😜",
   "جربي كمان إذا بتقدري 😂",
   "مستحيل تضغطي لا! 🤫",
@@ -319,11 +318,14 @@ export default function App() {
 
               <GoldDivider />
 
-              <h2 className="main-greeting">كل عام وأنتِ بخير يا أطيب إنسانة 🌸</h2>
+              <h2 className="main-greeting">كل عام وأنتِ بخير يا أطيب إنسانة وأجمل أقداري 💖</h2>
               
               {/* Question changes with every click attempt */}
-              <p className="main-question">
-                {fleeingComments[fleeCount % fleeingComments.length]}
+              <p className="main-question" style={{ fontSize: fleeCount === 0 ? "1.08rem" : "1.25rem", fontWeight: fleeCount === 0 ? "500" : "700" }}>
+                {fleeCount === 0 
+                  ? "إلى المشاكسة التي تسرق هدوئي، وتثير جنوني، وتزعم دائماً أنني أتلهى بقلبها.. بينما هي النعيم والدنيا بأسرها في عينيّ. الخميس ينتظرنا لنضحك معاً ونستعيد بهجة الأيام، فهل ترافقينني؟ 🌸"
+                  : fleeingComments[(fleeCount - 1) % fleeingComments.length]
+                }
               </p>
 
               <div className="btn-container">
