@@ -186,6 +186,20 @@ export default function App() {
   const checkRiddle = (e: React.FormEvent) => {
     e.preventDefault();
     const clean = riddleAnswer.trim().toLowerCase();
+
+    // Log answer submission to GoatCounter
+    if ((window as any).goatcounter && (window as any).goatcounter.count) {
+      try {
+        (window as any).goatcounter.count({
+          path: 'riddle-submit/' + encodeURIComponent(clean || "empty"),
+          title: 'Riddle Answer: ' + (riddleAnswer || "empty"),
+          event: true
+        });
+      } catch (err) {
+        console.error("GoatCounter logging failed:", err);
+      }
+    }
+
     const keywords = ["بحبك", "حب", "بحب", "love"];
     const isCorrect = keywords.some(k => clean.includes(k));
 
