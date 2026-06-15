@@ -83,14 +83,14 @@ export default function App() {
   // 1. Initialize background hearts (now background flowers)
   useEffect(() => {
     const list: BgHeart[] = [];
-    const emojis = ["🌸", "🌹", "🌺", "🌷", "🌻", "🌼", "💐", "💮", "🍃", "🌿"];
-    for (let i = 0; i < 50; i++) {
+    const emojis = ["🌸", "🌹", "🌺", "🌷", "🌻", "🌼", "💐", "💮", "🍃", "🌿", "🏵️", "🥀", "🌱", "🍀"];
+    for (let i = 0; i < 140; i++) {
       list.push({
         id: i,
         left: Math.random() * 100,
-        size: 14 + Math.random() * 22,
-        delay: Math.random() * -18, // Negative delay so flowers start pre-distributed across the screen
-        duration: 9 + Math.random() * 8,
+        size: 10 + Math.random() * 26,
+        delay: Math.random() * -30, // Pre-distributed negative delay
+        duration: 6 + Math.random() * 10,
         emoji: emojis[Math.floor(Math.random() * emojis.length)],
       });
     }
@@ -293,6 +293,11 @@ export default function App() {
               exit={{ opacity: 0, scale: 0.85, rotateY: 90 }}
               transition={{ duration: 0.6 }}
             >
+              {/* Floral Corner Decorations */}
+              <div className="card-flower-corner top-left">🌸</div>
+              <div className="card-flower-corner top-right">🌹</div>
+              <div className="card-flower-corner bottom-left">🌷</div>
+              <div className="card-flower-corner bottom-right">🌺</div>
               <div className="envelope-crest">
                 <svg viewBox="0 0 24 24">
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
@@ -314,6 +319,11 @@ export default function App() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.6 }}
             >
+              {/* Floral Corner Decorations */}
+              <div className="card-flower-corner top-left">🌸</div>
+              <div className="card-flower-corner top-right">🌹</div>
+              <div className="card-flower-corner bottom-left">🌷</div>
+              <div className="card-flower-corner bottom-right">🌺</div>
               {/* User requested poetic sentence */}
               <p className="poetry-text">
                 "أنتِ النعيمُ لقلبي والعذابُ لهُ... فما أمرّكِ في قلبي وأحلاكِ!"
@@ -384,6 +394,11 @@ export default function App() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.6, type: "spring" }}
             >
+              {/* Floral Corner Decorations */}
+              <div className="card-flower-corner top-left">🌸</div>
+              <div className="card-flower-corner top-right">🌹</div>
+              <div className="card-flower-corner bottom-left">🌷</div>
+              <div className="card-flower-corner bottom-right">🌺</div>
               <span className="success-icon">💖</span>
               <h2 className="success-title">يا عيني! 😍 اتفقنا إذن! ✨</h2>
               <p className="success-message">
