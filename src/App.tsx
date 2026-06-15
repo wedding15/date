@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import whiteGoldBg from "./assets/white-gold-bg.png";
+import floralBg from "./assets/floral-bg.png";
 import musicFile from "./assets/wedding-music.mp3";
 
 // ══════════ GOLD CALLIGRAPHIC SVG DIVIDER ══════════
@@ -42,6 +42,7 @@ interface BgHeart {
   size: number;
   delay: number;
   duration: number;
+  emoji: string;
 }
 
 const fleeingComments = [
@@ -79,16 +80,18 @@ export default function App() {
   // Next Thursday Countdown State
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
-  // 1. Initialize background hearts
+  // 1. Initialize background hearts (now background flowers)
   useEffect(() => {
     const list: BgHeart[] = [];
-    for (let i = 0; i < 15; i++) {
+    const emojis = ["🌸", "🌹", "🌺", "🌷", "🌻", "🌼", "💐", "💮", "🍃", "🌿"];
+    for (let i = 0; i < 50; i++) {
       list.push({
         id: i,
         left: Math.random() * 100,
-        size: 15 + Math.random() * 20,
-        delay: Math.random() * 8,
-        duration: 8 + Math.random() * 6,
+        size: 14 + Math.random() * 22,
+        delay: Math.random() * -18, // Negative delay so flowers start pre-distributed across the screen
+        duration: 9 + Math.random() * 8,
+        emoji: emojis[Math.floor(Math.random() * emojis.length)],
       });
     }
     setBgHearts(list);
@@ -205,7 +208,7 @@ export default function App() {
     <>
       {/* Background Frame and Pattern */}
       <div className="app-bg">
-        <img src={whiteGoldBg} className="app-bg__img" alt="" />
+        <img src={floralBg} className="app-bg__img" alt="" style={{ opacity: 0.2, objectFit: 'cover' }} />
         <div className="app-bg__overlay" />
       </div>
       <div className="page-frame" />
@@ -223,7 +226,7 @@ export default function App() {
               animationDuration: `${h.duration}s`,
             }}
           >
-            🌸
+            {h.emoji}
           </div>
         ))}
       </div>
