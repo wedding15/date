@@ -314,7 +314,7 @@ export default function App() {
             >
               {/* User requested poetic sentence */}
               <p className="poetry-text">
-                "تؤنسين من يعرفك وكأنك الفرحة والطبيعة والسكاكر"
+                "أنتِ النعيمُ لقلبي والعذابُ لهُ... فما أمرّكِ في قلبي وأحلاكِ!"
               </p>
 
               <GoldDivider />
