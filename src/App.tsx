@@ -48,7 +48,7 @@ export default function App() {
   const [opened, setOpened] = useState(false);
   const [yesClicked, setYesClicked] = useState(false); // Represents "wish made"
   
-  // Floating Background Particles (Balloons & Flowers)
+  // Floating Background Particles (Balloons & Flowers - Neutral, no hearts)
   const [bgHearts, setBgHearts] = useState<BgHeart[]>([]);
   
   // Confetti particles
@@ -60,10 +60,10 @@ export default function App() {
   // 5-second loading countdown state
   const [loadingCount, setLoadingCount] = useState(5);
 
-  // 1. Initialize background floating elements (birthday mix)
+  // 1. Initialize background floating elements (birthday mix - neutral)
   useEffect(() => {
     const list: BgHeart[] = [];
-    const emojis = ["🌸", "🌹", "🌷", "🌺", "🎈", "✨", "🎉", "🍰", "🎂", "💖", "💝", "🎁", "🍬"];
+    const emojis = ["🌸", "🌹", "🌷", "🌺", "🎈", "✨", "🎉", "🍰", "🎂", "🎁", "🍬", "⭐", "🌟"];
     for (let i = 0; i < 140; i++) {
       list.push({
         id: i,
@@ -121,8 +121,8 @@ export default function App() {
   const handleMakeWish = () => {
     setYesClicked(true);
     
-    // Spawn massive confetti / birthday items explosion
-    const emojis = ["❤️", "💖", "💝", "🌸", "🎈", "✨", "🎉", "🍰", "🎂", "🍬", "🍭", "🎁"];
+    // Spawn massive confetti / birthday items explosion (neutral, no hearts)
+    const emojis = ["🌸", "🎈", "✨", "🎉", "🍰", "🎂", "🍬", "🍭", "🎁", "⭐", "🌟", "💐"];
     const list: HeartParticle[] = [];
     for (let i = 0; i < 90; i++) {
       list.push({
@@ -209,8 +209,8 @@ export default function App() {
               <div className="card-flower-corner bottom-left">🌷</div>
               <div className="card-flower-corner bottom-right">🌺</div>
               <div className="envelope-crest">
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
                 </svg>
               </div>
               <h1 className="envelope-title">لديكِ بطاقة تهنئة جديدة 🌸</h1>
@@ -264,17 +264,17 @@ export default function App() {
               <div className="card-flower-corner bottom-left">🌷</div>
               <div className="card-flower-corner bottom-right">🌺</div>
               
-              {/* Beautiful birthday poetic sentence */}
+              {/* Beautiful birthday poetic sentence - Neutral */}
               <p className="poetry-text">
-                "دومي بخيرٍ ودامَ العمرُ في فرحٍ... يا من بـهـا تـزدهي الأيامُ والـعُـمُـرُ!"
+                "سنةٌ جديدةٌ تُقبل بالبشائر والسرور... متمنين لكِ فيها السعادة وتوفيق الأمور!"
               </p>
 
               <GoldDivider />
 
-              <h2 className="main-greeting">كل عام وأنتِ بخير يا أطيب إنسانة وأجمل أقداري 💖</h2>
+              <h2 className="main-greeting">كل عام وأنتِ بخير يا أطيب وألطف إنسانة ✨</h2>
               
               <p className="main-question" style={{ fontSize: "1.08rem", fontWeight: "500" }}>
-                يوم الجمعة 19 حزيران (يونيو) هو اليوم الذي أشرقتِ فيه لتجعلي الدنيا أكثر جمالاً ولطفاً. أتمنى لكِ عاماً مليئاً بالحب والضحك والنجاح، وأن تبقي دائماً الروح الجميلة والنعيم لمن حولكِ. 🌸✨
+                يوم الجمعة 19 حزيران هو مناسبة مميزة للاحتفال بيوم ميلادكِ السعيد. أتمنى لكِ عاماً جميلاً مليئاً بالنجاح والتوفيق والسعادة، وتمنياتي الصادقة لكِ بتحقيق كل أمنياتكِ وطموحاتكِ. 🌸✨
               </p>
 
               <div style={{ display: "flex", justifyContent: "center", width: "100%", marginTop: "16px" }}>
@@ -291,7 +291,7 @@ export default function App() {
 
               <footer className="footer">
                 <p className="footer__text">
-                  صُمم بكل <span className="footer__heart">♥</span>
+                  مع أطيب التمنيات 🌸✨
                 </p>
               </footer>
             </motion.div>
@@ -311,11 +311,11 @@ export default function App() {
               <div className="card-flower-corner bottom-right">🌺</div>
               
               <span className="success-icon">🎂</span>
-              <h2 className="success-title">سنة حلوة يا جميل! 🍰✨</h2>
+              <h2 className="success-title">سنة حلوة وسعيدة! 🍰✨</h2>
               <p className="success-message">
-                كل عام وأنتِ بخير وسعادة وراحة بال! 💖🌸
+                كل عام وأنتِ بخير وسعادة وراحة بال! 🌸✨
                 <br />
-                أتمنى لكِ عاماً جميلاً يشبه نقاء قلبكِ ولطف روحكِ. ✨
+                أتمنى لكِ عاماً جميلاً مليئاً بالتوفيق والنجاح. ✨
               </p>
 
               <div className="countdown-box">
