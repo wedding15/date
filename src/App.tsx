@@ -1,7 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import floralBg from "./assets/floral-bg.png";
-import musicFile from "./assets/wedding-music.mp3";
 
 // ══════════ GOLD CALLIGRAPHIC SVG DIVIDER ══════════
 function GoldDivider() {
@@ -25,7 +24,7 @@ function GoldDivider() {
   );
 }
 
-// ══════════ TYPES & COMMENTS ══════════
+// ══════════ TYPES ══════════
 interface HeartParticle {
   id: number;
   x: number;
@@ -45,58 +44,31 @@ interface BgHeart {
   emoji: string;
 }
 
-const fleeingComments = [
-  "ما في مهرب! 😜",
-  "جربي كمان إذا بتقدري 😂",
-  "مستحيل تضغطي لا! 🤫",
-  "الخميس يعني الخميس! 🥳",
-  "نعم هي الخيار الوحيد 🥰",
-  "لا مفر! 💘",
-  "قدامك خيار واحد بس 🤭",
-];
-
 export default function App() {
   const [opened, setOpened] = useState(false);
-  const [yesClicked, setYesClicked] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [yesClicked, setYesClicked] = useState(false); // Represents "wish made"
   
-  // Floating Background Hearts
+  // Floating Background Particles (Balloons & Flowers)
   const [bgHearts, setBgHearts] = useState<BgHeart[]>([]);
   
   // Confetti particles
   const [particles, setParticles] = useState<HeartParticle[]>([]);
   
-  // Flee state for NO button
-  const [fleeState, setFleeState] = useState<{ x: number; y: number; active: boolean }>({
-    x: 0,
-    y: 0,
-    active: false,
-  });
-  const [fleeCount, setFleeCount] = useState(0);
-
-  // Audio elements
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  // Next Thursday Countdown State
+  // Countdown State (to Friday, June 19th, 2026)
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   // 5-second loading countdown state
   const [loadingCount, setLoadingCount] = useState(5);
 
-  // Riddle gate states
-  const [riddlePassed, setRiddlePassed] = useState(false);
-  const [riddleAnswer, setRiddleAnswer] = useState("");
-  const [riddleError, setRiddleError] = useState("");
-
-  // 1. Initialize background hearts (now background flowers)
+  // 1. Initialize background floating elements (birthday mix)
   useEffect(() => {
     const list: BgHeart[] = [];
-    const emojis = ["🌸", "🌹", "🌺", "🌷", "🌻", "🌼", "💐", "💮", "🍃", "🌿", "🏵️", "🥀", "🌱", "🍀"];
+    const emojis = ["🌸", "🌹", "🌷", "🌺", "🎈", "✨", "🎉", "🍰", "🎂", "💖", "💝", "🎁", "🍬"];
     for (let i = 0; i < 140; i++) {
       list.push({
         id: i,
         left: Math.random() * 100,
-        size: 10 + Math.random() * 26,
+        size: 12 + Math.random() * 24,
         delay: Math.random() * -30, // Pre-distributed negative delay
         duration: 6 + Math.random() * 10,
         emoji: emojis[Math.floor(Math.random() * emojis.length)],
@@ -105,22 +77,7 @@ export default function App() {
     setBgHearts(list);
   }, []);
 
-  // 2. Initialize Audio & Preload Immediately
-  useEffect(() => {
-    audioRef.current = new Audio(musicFile);
-    audioRef.current.loop = true;
-    audioRef.current.volume = 0.45;
-    audioRef.current.preload = "auto";
-    audioRef.current.load(); // Forces browser to download audio in the background immediately
-
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-    };
-  }, []);
-
-  // 2.5. Countdown timer for opening availability (runs immediately on mount)
+  // 2. Countdown timer for envelope loader (5 seconds)
   useEffect(() => {
     const timer = setInterval(() => {
       setLoadingCount((prev) => {
@@ -134,19 +91,9 @@ export default function App() {
     return () => clearInterval(timer);
   }, []);
 
-  // 3. Countdown timer logic (Next Thursday at 7:00 PM)
+  // 3. Countdown timer logic (to Friday, June 19th, 2026 at 00:00:00)
   useEffect(() => {
-    const getNextThursday = () => {
-      const now = new Date();
-      const resultDate = new Date();
-      // Calculate days to next Thursday (4 is Thursday)
-      const daysToThursday = (7 + 4 - now.getDay()) % 7;
-      resultDate.setDate(now.getDate() + (daysToThursday === 0 && now.getHours() >= 19 ? 7 : daysToThursday));
-      resultDate.setHours(19, 0, 0, 0);
-      return resultDate.getTime();
-    };
-
-    const targetTime = getNextThursday();
+    const targetTime = new Date("2026-06-19T00:00:00").getTime();
 
     const updateTimer = () => {
       const now = Date.now();
@@ -165,113 +112,26 @@ export default function App() {
     return () => clearInterval(intervalId);
   }, [yesClicked]);
 
-  // Audio Toggling
-  const handlePlayToggle = () => {
-    if (!audioRef.current) return;
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      audioRef.current.play().catch((err) => console.log("Audio play failed:", err));
-      setIsPlaying(true);
-    }
-  };
-
-  // Open Invitation
+  // Open Invitation / Greeting Card
   const handleOpenInvitation = () => {
     setOpened(true);
   };
 
-  // Riddle check verification handler
-  const checkRiddle = (e: React.FormEvent) => {
-    e.preventDefault();
-    const rawAnswer = riddleAnswer.trim();
-    const clean = rawAnswer.toLowerCase();
-
-    // Log answer submission to GoatCounter
-    const cleanPathName = clean.replace(/\s+/g, '-');
-    const eventPath = 'riddle-submit/' + (cleanPathName || 'empty');
-    const eventTitle = 'Riddle Answer: ' + (rawAnswer || 'empty');
-
-    // 1. Try standard GoatCounter JS API
-    if ((window as any).goatcounter && (window as any).goatcounter.count) {
-      try {
-        (window as any).goatcounter.count({
-          path: eventPath,
-          title: eventTitle,
-          event: true
-        });
-      } catch (err) {
-        console.error("GoatCounter JS logging failed:", err);
-      }
-    }
-
-    // 2. Always fire pixel fallback to maximize reliability
-    // (e.g. in case the script tag hasn't loaded yet or is blocked by an adblocker element rule)
-    try {
-      const pixelUrl = `https://homam.goatcounter.com/count?p=${encodeURIComponent(eventPath)}&t=${encodeURIComponent(eventTitle)}&e=true`;
-      const img = new Image();
-      img.src = pixelUrl;
-    } catch (err) {
-      console.error("GoatCounter pixel fallback failed:", err);
-    }
-
-    const keywords = ["بحبك", "حب", "بحب", "love"];
-    const isCorrect = keywords.some(k => clean.includes(k));
-
-    if (isCorrect) {
-      setRiddleError("");
-      setRiddlePassed(true);
-      // Play background music only after correct answer
-      if (audioRef.current) {
-        audioRef.current.play()
-          .then(() => setIsPlaying(true))
-          .catch((err) => console.log("Music play failed:", err));
-      }
-    } else {
-      if (clean.includes("تسنيم") || clean.includes("tasneem")) {
-        setRiddleError("اي انت بتسكني الروح بس بدي جواب صح 💖");
-      } else {
-        setRiddleError("أنتِ لستِ من يسكن الروح 😢");
-      }
-    }
-  };
-
-  // Flee logic for No Button
-  const handleFlee = () => {
-    const btnWidth = 120;
-    const btnHeight = 45;
-    const padding = 50;
-
-    const maxX = window.innerWidth - btnWidth - padding;
-    const maxY = window.innerHeight - btnHeight - padding;
-
-    const newX = padding + Math.random() * (maxX - padding);
-    const newY = padding + Math.random() * (maxY - padding);
-
-    setFleeState({
-      x: newX,
-      y: newY,
-      active: true,
-    });
-    setFleeCount((prev) => prev + 1);
-  };
-
-  // Yes Button Trigger
-  const handleYes = () => {
+  // Trigger Wish / Confetti
+  const handleMakeWish = () => {
     setYesClicked(true);
     
-    // Spawn heart explosion particles
-    const emojis = ["❤️", "💖", "💝", "🌸", "💕", "✨", "🌹", "🥰", "🍬", "🍭"];
+    // Spawn massive confetti / birthday items explosion
+    const emojis = ["❤️", "💖", "💝", "🌸", "🎈", "✨", "🎉", "🍰", "🎂", "🍬", "🍭", "🎁"];
     const list: HeartParticle[] = [];
-    for (let i = 0; i < 70; i++) {
+    for (let i = 0; i < 90; i++) {
       list.push({
         id: i + Math.random(),
         x: 0,
         y: 0,
         size: 16 + Math.random() * 24,
         angle: Math.random() * 360,
-        speed: 3 + Math.random() * 7,
+        speed: 3 + Math.random() * 8,
         emoji: emojis[Math.floor(Math.random() * emojis.length)],
       });
     }
@@ -287,7 +147,7 @@ export default function App() {
       </div>
       <div className="page-frame" />
 
-      {/* Floating background hearts */}
+      {/* Floating background particles */}
       <div className="heart-bg">
         {bgHearts.map((h) => (
           <div
@@ -304,30 +164,6 @@ export default function App() {
           </div>
         ))}
       </div>
-
-      {/* Floating Music Controls Button */}
-      {riddlePassed && (
-        <button
-          className={`music-toggle-btn ${isPlaying ? "playing" : ""}`}
-          onClick={handlePlayToggle}
-          aria-label="Toggle Background Music"
-        >
-          <div className="music-toggle-btn__ripple" />
-          <svg
-            className="music-toggle-btn__icon"
-            viewBox="0 0 24 24"
-            width="20"
-            height="20"
-            fill="currentColor"
-          >
-            {isPlaying ? (
-              <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h6V3h-8z" />
-            ) : (
-              <path d="M4.27 3L3 4.27l9 9v.28c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4v-1.18l5.45 5.45L21 21.73 4.27 3zM14 7h4V3h-6v5.18l2 2V7z" />
-            )}
-          </svg>
-        </button>
-      )}
 
       {/* Confetti Explosion rendering */}
       <AnimatePresence>
@@ -377,8 +213,8 @@ export default function App() {
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                 </svg>
               </div>
-              <h1 className="envelope-title">وصلتكِ رسالة جديدة 🌸</h1>
-              <p className="envelope-subtitle">دعوة خاصة ومميزة تم تصميمها لكِ خصيصاً</p>
+              <h1 className="envelope-title">لديكِ بطاقة تهنئة جديدة 🌸</h1>
+              <p className="envelope-subtitle">بطاقة معايدة خاصة بمناسبة عيد ميلادكِ السعيد ✨</p>
               
               <AnimatePresence mode="wait">
                 {loadingCount > 0 ? (
@@ -397,7 +233,7 @@ export default function App() {
                         transition={{ duration: 5, ease: "linear" }}
                       />
                     </div>
-                    <p className="loader-text">جاري إعداد الدعوة الخاصة بكِ... {loadingCount}</p>
+                    <p className="loader-text">جاري إعداد بطاقتكِ الخاصة... {loadingCount}</p>
                   </motion.div>
                 ) : (
                   <motion.button
@@ -407,67 +243,15 @@ export default function App() {
                     className="btn-gold-shimmer"
                     onClick={handleOpenInvitation}
                   >
-                    افتح الرسالة 💌
+                    افتح البطاقة ✉️
                   </motion.button>
                 )}
               </AnimatePresence>
             </motion.div>
-          ) : !riddlePassed ? (
-            /* STEP 2: RIDDLE GATE CARD */
-            <motion.div
-              key="riddle"
-              className="card"
-              initial={{ opacity: 0, scale: 0.85, rotateY: -90 }}
-              animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-              exit={{ opacity: 0, scale: 0.85, y: -20 }}
-              transition={{ duration: 0.6 }}
-            >
-              {/* Floral Corner Decorations */}
-              <div className="card-flower-corner top-left">🌸</div>
-              <div className="card-flower-corner top-right">🌹</div>
-              <div className="card-flower-corner bottom-left">🌷</div>
-              <div className="card-flower-corner bottom-right">🌺</div>
-              
-              <h2 className="main-greeting" style={{ fontSize: "1.3rem" }}>كل عام وأنتِ بخير يا أطيب إنسانة وأجمل أقداري 💖</h2>
-              <GoldDivider />
-              <p className="main-question" style={{ minHeight: "auto", marginBottom: "8px" }}>
-                ما معنى "اي" ؟
-              </p>
-              
-              <form onSubmit={checkRiddle} style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
-                <input
-                  type="text"
-                  className="riddle-input"
-                  placeholder="اكتبي الإجابة هنا..."
-                  value={riddleAnswer}
-                  onChange={(e) => {
-                    setRiddleAnswer(e.target.value);
-                    if (riddleError) setRiddleError("");
-                  }}
-                  autoFocus
-                />
-                
-                <button type="submit" className="btn btn-yes">
-                  تأكيد الإجابة 🔐
-                </button>
-              </form>
-
-              {riddleError && (
-                <motion.p 
-                  className="riddle-error-msg"
-                  key={riddleError}
-                  initial={{ x: -4 }}
-                  animate={{ x: 0 }}
-                  transition={{ type: "spring", stiffness: 600, damping: 10 }}
-                >
-                  {riddleError}
-                </motion.p>
-              )}
-            </motion.div>
           ) : !yesClicked ? (
-            /* STEP 3: MAIN CARD - POETRY AND YES/NO QUESTIONS */
+            /* STEP 2: GREETING CARD */
             <motion.div
-              key="invitation"
+              key="greeting-card"
               className="card"
               initial={{ opacity: 0, scale: 0.85, rotateY: -90 }}
               animate={{ opacity: 1, scale: 1, rotateY: 0 }}
@@ -479,58 +263,29 @@ export default function App() {
               <div className="card-flower-corner top-right">🌹</div>
               <div className="card-flower-corner bottom-left">🌷</div>
               <div className="card-flower-corner bottom-right">🌺</div>
-              {/* User requested poetic sentence */}
+              
+              {/* Beautiful birthday poetic sentence */}
               <p className="poetry-text">
-                "أنتِ النعيمُ لقلبي والعذابُ لهُ... فما أمرّكِ في قلبي وأحلاكِ!"
+                "دومي بخيرٍ ودامَ العمرُ في فرحٍ... يا من بـهـا تـزدهي الأيامُ والـعُـمُـرُ!"
               </p>
 
               <GoldDivider />
 
               <h2 className="main-greeting">كل عام وأنتِ بخير يا أطيب إنسانة وأجمل أقداري 💖</h2>
               
-              {/* Question changes with every click attempt */}
-              <p className="main-question" style={{ fontSize: fleeCount === 0 ? "1.08rem" : "1.25rem", fontWeight: fleeCount === 0 ? "500" : "700" }}>
-                {fleeCount === 0 
-                  ? "إلى المشاكسة التي تسرق هدوئي، وتثير جنوني، وتزعم دائماً أنني أتلهى بقلبها.. بينما هي النعيم والدنيا بأسرها في عينيّ. الخميس ينتظرنا لنضحك معاً ونستعيد بهجة الأيام، فهل ترافقينني؟ 🌸"
-                  : fleeingComments[(fleeCount - 1) % fleeingComments.length]
-                }
+              <p className="main-question" style={{ fontSize: "1.08rem", fontWeight: "500" }}>
+                يوم الجمعة 19 حزيران (يونيو) هو اليوم الذي أشرقتِ فيه لتجعلي الدنيا أكثر جمالاً ولطفاً. أتمنى لكِ عاماً مليئاً بالحب والضحك والنجاح، وأن تبقي دائماً الروح الجميلة والنعيم لمن حولكِ. 🌸✨
               </p>
 
-              <div className="btn-container">
+              <div style={{ display: "flex", justifyContent: "center", width: "100%", marginTop: "16px" }}>
                 <motion.button
-                  className="btn btn-yes"
+                  className="btn-gold-shimmer"
+                  style={{ minWidth: "200px" }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={handleYes}
+                  onClick={handleMakeWish}
                 >
-                  نعم 😍
-                </motion.button>
-
-                <motion.button
-                  className="btn btn-no"
-                  style={
-                    fleeState.active
-                      ? {
-                          position: "fixed",
-                          left: fleeState.x,
-                          top: fleeState.y,
-                          zIndex: 1000,
-                        }
-                      : {}
-                  }
-                  animate={fleeState.active ? { left: fleeState.x, top: fleeState.y } : {}}
-                  transition={{ type: "spring", stiffness: 380, damping: 22 }}
-                  onMouseEnter={handleFlee}
-                  onTouchStart={(e) => {
-                    e.preventDefault();
-                    handleFlee();
-                  }}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleFlee();
-                  }}
-                >
-                  لا 😢
+                  تمنّي أمنية ✨
                 </motion.button>
               </div>
 
@@ -541,7 +296,7 @@ export default function App() {
               </footer>
             </motion.div>
           ) : (
-            /* SUCCESS VIEW */
+            /* STEP 3: SUCCESS / WISH GRANTED VIEW */
             <motion.div
               key="success"
               className="card"
@@ -554,16 +309,17 @@ export default function App() {
               <div className="card-flower-corner top-right">🌹</div>
               <div className="card-flower-corner bottom-left">🌷</div>
               <div className="card-flower-corner bottom-right">🌺</div>
-              <span className="success-icon">💖</span>
-              <h2 className="success-title">يا عيني! 😍 اتفقنا إذن! ✨</h2>
+              
+              <span className="success-icon">🎂</span>
+              <h2 className="success-title">سنة حلوة يا جميل! 🍰✨</h2>
               <p className="success-message">
-                الخميس رح يكون أحلى يوم 🌸✨
+                كل عام وأنتِ بخير وسعادة وراحة بال! 💖🌸
                 <br />
-                تجهزي لأجمل مشوار ونقاهة وتغيير جو! 💖🥳
+                أتمنى لكِ عاماً جميلاً يشبه نقاء قلبكِ ولطف روحكِ. ✨
               </p>
 
               <div className="countdown-box">
-                <p className="countdown-title">⏳ المتبقي على لقائنا المنتظر:</p>
+                <p className="countdown-title">⏳ المتبقي على يوم ميلادكِ السعيد (19 حزيران):</p>
                 <div className="countdown-grid">
                   <div className="countdown-unit">
                     <span className="countdown-val">{timeLeft.days}</span>
@@ -589,7 +345,7 @@ export default function App() {
 
               <footer className="footer" style={{ marginTop: "32px" }}>
                 <p className="footer__text">
-                  بانتظاركِ بكل شوق 🌸✨
+                  عيد ميلاد سعيد 🌸✨
                 </p>
               </footer>
             </motion.div>
