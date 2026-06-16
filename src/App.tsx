@@ -274,7 +274,7 @@ export default function App() {
               <h2 className="main-greeting">كل عام وأنتِ بخير يا أطيب وألطف إنسانة ✨</h2>
               
               <p className="main-question" style={{ fontSize: "1.08rem", fontWeight: "500" }}>
-                يوم الجمعة 19 حزيران هو مناسبة مميزة للاحتفال بيوم ميلادكِ السعيد. أتمنى لكِ عاماً جميلاً مليئاً بالنجاح والتوفيق والسعادة، وتمنياتي الصادقة لكِ بتحقيق كل أمنياتكِ وطموحاتكِ. 🌸✨
+                هذه مناسبة مميزة للاحتفال بيوم ميلادكِ السعيد. أتمنى لكِ عاماً جميلاً مليئاً بالنجاح والتوفيق والسعادة، وتمنياتي الصادقة لكِ بتحقيق كل أمنياتكِ وطموحاتكِ. 🌸✨
               </p>
 
               <div style={{ display: "flex", justifyContent: "center", width: "100%", marginTop: "16px" }}>
@@ -319,7 +319,7 @@ export default function App() {
               </p>
 
               <div className="countdown-box">
-                <p className="countdown-title">⏳ المتبقي على يوم ميلادكِ السعيد (19 حزيران):</p>
+                <p className="countdown-title">⏳ المتبقي على يوم ميلادكِ السعيد:</p>
                 <div className="countdown-grid">
                   <div className="countdown-unit">
                     <span className="countdown-val">{timeLeft.days}</span>
